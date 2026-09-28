@@ -177,6 +177,7 @@ export default function Page() {
                 return (
                   <button key={office.name} className={candidate ? 'selected-chip filled' : 'selected-chip'} onClick={() => setActiveOffice(office.name)} aria-label={`${officeLabel(office.name, state)}: ${candidate ? candidate.name : 'não escolhido'}`}>
                     {candidate && <Avatar candidate={candidate} className="chip-avatar" />}
+                    {candidate && <span className="chip-check" aria-hidden="true">✓</span>}
                     <span>{candidate ? candidate.number : '—'}</span>
                     <small>{officeShort(office.name, state)}</small>
                   </button>
@@ -192,15 +193,6 @@ export default function Page() {
               {states.map(([uf, name]) => <option key={uf} value={uf}>{uf} — {name}</option>)}
             </select>
             <span className="location-help">Você vota nos candidatos do estado do seu título.</span>
-          </div>
-
-          <div className="office-tabs" role="tablist" aria-label="Cargos">
-            {offices.map((office, index) => (
-              <button key={office.name} className={activeOffice === office.name ? 'office-tab active' : 'office-tab'} onClick={() => { setActiveOffice(office.name); setSearch('') }} role="tab" aria-selected={activeOffice === office.name}>
-                <span className="tab-index">0{index + 1}</span><strong>{officeLabel(office.name, state)}</strong><small>{selected[office.name] ? 'Selecionado' : `${office.digits} dígitos`}</small>
-                {selected[office.name] && <span className="tab-check">✓</span>}
-              </button>
-            ))}
           </div>
 
           <div className="candidate-area">
