@@ -130,6 +130,21 @@ button { cursor: pointer; }
 .print-button { background: var(--orange); color: #163d2a; }
 .footer a { color: var(--green); }
 
+/* Fluxo direto: a montagem começa imediatamente no mobile. */
+.builder-title { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.builder-title h1 { margin:0; color:var(--green-dark); font-size:28px; line-height:1; letter-spacing:-1.2px; font-weight:900; }
+.builder-title span { color:var(--green); background:var(--mint); border-radius:999px; padding:6px 9px; font-size:10px; font-weight:800; }
+.selected-strip { margin:0 0 16px; }
+.selected-strip-label { margin-bottom:8px; color:var(--muted); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; }
+.selected-strip-list { display:flex; gap:8px; overflow-x:auto; margin:0 -14px; padding:0 14px 3px; scrollbar-width:none; }
+.selected-strip-list::-webkit-scrollbar { display:none; }
+.selected-chip { flex:0 0 92px; min-height:58px; display:flex; flex-direction:column; justify-content:center; gap:4px; padding:8px 9px; border:1px solid var(--line); border-radius:11px; background:#f7fbf7; color:var(--muted); text-align:left; }
+.selected-chip span { color:#96a69d; font-size:18px; font-weight:900; line-height:1; }
+.selected-chip small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:9px; font-weight:700; }
+.selected-chip.filled { border-color:#a9d8b7; background:var(--green); color:#fff; }
+.selected-chip.filled span { color:var(--orange); }
+.selected-chip.filled small { color:#e1f5e7; }
+
 @media (max-width: 600px) {
   .app-shell { min-width: 0; }
   .hero { padding: 30px 16px 22px; }

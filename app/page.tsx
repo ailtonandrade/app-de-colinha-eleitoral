@@ -110,20 +110,18 @@ export default function Page() {
         </div>
       </header>
 
-      <section className="hero" id="top">
-        <div className="hero-copy">
-          <div className="eyebrow"><span /> ELEIÇÕES 2026</div>
-          <h1>Monte sua <em>colinha.</em></h1>
-          <p>Escolha seus candidatos e confira seus números antes de votar.</p>
-        </div>
-        <div className="hero-seal" aria-hidden="true"><span>2026</span><small>SEU VOTO<br />IMPORTA</small><i>✦</i></div>
-      </section>
-
       <div className="content-grid">
         <section className="builder-card">
-          <div className="card-heading">
-            <div><span className="section-number">01</span><div><h2>Monte sua colinha</h2><p>Selecione um candidato para cada cargo.</p></div></div>
-            <span className="progress-label">{progress}/5 preenchidos</span>
+          <div className="builder-title"><h1>Monte sua colinha</h1><span>{progress}/5</span></div>
+
+          <div className="selected-strip" aria-label="Candidatos escolhidos">
+            <div className="selected-strip-label">Sua seleção</div>
+            <div className="selected-strip-list">
+              {offices.map((office) => {
+                const candidate = selected[office.name]
+                return <button key={office.name} className={candidate ? 'selected-chip filled' : 'selected-chip'} onClick={() => setActiveOffice(office.name)} aria-label={`${office.name}: ${candidate ? candidate.name : 'não escolhido'}`}><span>{candidate ? candidate.number : '—'}</span><small>{office.name.replace('Deputado ', 'Dep. ')}</small></button>
+              })}
+            </div>
           </div>
 
           <div className="location-row">
