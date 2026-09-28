@@ -126,7 +126,12 @@ button { cursor: pointer; }
 .candidate-number { color: var(--green-dark); background: var(--orange); border-radius: 7px; padding: 4px 6px; }
 .radio { border-color: #b9d2c1; }
 .candidate.selected .radio { background: var(--green); border-color: var(--green); color: #fff; }
-.slip-card { background: linear-gradient(145deg, #00683f, #087a4b); }
+.slip-card { background: linear-gradient(145deg, #005b38 0%, #087a4b 58%, #15945d 100%); }
+.slip-top { padding-bottom: 16px; }
+.slip-list { padding-top: 4px; }
+.slip-item { gap: 8px; }
+.slip-avatar { width: 30px; height: 30px; flex: 0 0 30px; display: grid; place-items: center; border-radius: 50%; background: #c9ef73; color: #075c3a; font-size: 9px; font-weight: 900; letter-spacing: -.3px; }
+.slip-item em { display: block; margin-top: 3px; color: #d2ebbd; font-size: 9px; font-style: normal; }
 .print-button { background: var(--orange); color: #163d2a; }
 .footer a { color: var(--green); }
 
