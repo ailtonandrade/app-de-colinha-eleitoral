@@ -135,6 +135,41 @@ button { cursor: pointer; }
 .print-button { background: var(--orange); color: #163d2a; }
 .footer a { color: var(--green); }
 
+/* Paleta principal: verde brasileiro com acentos solares. */
+body { background: #064c32; color: #fff; }
+.app-shell { background: linear-gradient(160deg, #064c32 0%, #087a4b 52%, #0b9257 100%); color: #fff; }
+.topbar { background: rgba(0, 82, 52, .94); border-bottom-color: rgba(255, 210, 26, .28); }
+.brand, .brand strong { color: #fff; }
+.brand small, .secure { color: #d8efbd; }
+.hero h1, .hero p, .hero-note, .card-heading h2, .card-heading p, .builder-title h1 { color: #fff; }
+.eyebrow { color: #ffd21a; }
+.hero h1 em { color: #ffd21a; }
+.hero p { color: #e2f4db; }
+.hero-note { color: #d8efbd; }
+.content-grid { color: #fff; }
+.builder-card { background: #f3fbe9; border-color: rgba(255, 210, 26, .38); }
+.card-heading h2, .builder-title h1 { color: #075c3a; }
+.card-heading p, .selected-strip-label, .location-row label, .mini-label { color: #477565; }
+.progress-label { color: #075c3a; background: #d9f19c; }
+.location-row { background: #e7f6c9; }
+.location-row select { background: #fffef0; color: #075c3a; border-color: #b9d98e; }
+.office-tab { color: #5d8971; }
+.office-tab.active { color: #075c3a; }
+.candidate-area { background: #fffef4; border-color: #c8e39f; }
+.candidate-title h3 { color: #075c3a; }
+.search-wrap { background: #fff; border-color: #b9d98e; }
+.candidate { border-bottom-color: #dbeac4; }
+.candidate-info strong { color: #075c3a; }
+.candidate-info small { color: #5d8971; }
+.selected-chip { background: #e9f7d2; border-color: #b9d98e; color: #477565; }
+.selected-chip.filled { background: #087a4b; border-color: #ffd21a; color: #fff; }
+.selected-chip.filled small { color: #f4ffd7; }
+.slip-card { background: linear-gradient(145deg, #004a30 0%, #087a4b 58%, #12a263 100%); border-color: #ffd21a; }
+.slip-top h2, .slip-item strong { color: #fff; }
+.print-button { background: #ffd21a; color: #064c32; }
+.footer { color: #d8efbd; border-top-color: rgba(255, 210, 26, .3); }
+.footer a { color: #ffd21a; }
+
 /* Fluxo direto: a montagem começa imediatamente no mobile. */
 .builder-title { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .builder-title h1 { margin:0; color:var(--green-dark); font-size:28px; line-height:1; letter-spacing:-1.2px; font-weight:900; }
