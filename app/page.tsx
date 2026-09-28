@@ -65,6 +65,7 @@ export default function Page() {
   const [loadingCandidates, setLoadingCandidates] = useState(true)
   const [dataError, setDataError] = useState('')
   const [search, setSearch] = useState('')
+  const [partyFilter, setPartyFilter] = useState('')
   const [copied, setCopied] = useState(false)
   // Deputados passam de mil por estado: renderiza aos poucos pra não travar o celular.
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
@@ -114,17 +115,25 @@ export default function Page() {
     return () => { cancelled = true }
   }, [cacheKey, activeApi, state, candidateData])
 
+  const partyOptions = useMemo(() => {
+    return Array.from(new Set((candidateData[cacheKey] || []).map((candidate) => candidate.party).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'pt-BR'))
+  }, [candidateData, cacheKey])
+
   const filteredCandidates = useMemo(() => {
     const term = search.toLowerCase().trim()
     // O mesmo candidato não pode ocupar os dois votos de Senador.
     const otherSenator = activeOffice === '1º Senador' ? selected['2º Senador'] : activeOffice === '2º Senador' ? selected['1º Senador'] : undefined
     return (candidateData[cacheKey] || []).filter((candidate) => {
       if (otherSenator && candidate.id === otherSenator.id) return false
+      if (partyFilter && candidate.party !== partyFilter) return false
       return !term || `${candidate.name} ${candidate.number} ${candidate.party}`.toLowerCase().includes(term)
     })
   }, [candidateData, cacheKey, search, activeOffice, selected])
 
-  useEffect(() => { setVisibleCount(PAGE_SIZE) }, [cacheKey, activeOffice, search])
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
+    setPartyFilter('')
+  }, [cacheKey, activeOffice, search])
 
   const changeState = (next: string) => {
     setState(next)
@@ -207,6 +216,15 @@ export default function Page() {
           <div className="candidate-area">
             <div className="candidate-title"><div><span className="mini-label">CARGO</span><h3>{officeLabel(activeOffice, state)}</h3></div><span className="digits">{activeDigits} dígitos</span></div>
             <div className="search-wrap"><Icon>⌕</Icon><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Busque por nome, número ou partido" aria-label="Buscar candidato" /></div>
+            {partyOptions.length > 0 && (
+              <div className="party-filter-wrap">
+                <label htmlFor="party-filter">Filtrar por partido</label>
+                <select id="party-filter" value={partyFilter} onChange={(event) => setPartyFilter(event.target.value)}>
+                  <option value="">Todos os partidos</option>
+                  {partyOptions.map((party) => <option key={party} value={party}>{party}</option>)}
+                </select>
+              </div>
+            )}
             <div className="candidate-list">
               {loadingCandidates && <p className="empty-state">Consultando a lista oficial do TSE...</p>}
               {!loadingCandidates && dataError && <p className="empty-state">{dataError}</p>}
