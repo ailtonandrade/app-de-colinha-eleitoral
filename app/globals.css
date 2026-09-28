@@ -221,5 +221,9 @@ body { background: #064c32; color: #fff; }
 .candidate-status { color: #b45309; font-style: normal; }
 .empty-state { color: #5d8971; font-size: 12px; margin: 8px 2px; }
 @media (max-width: 600px) { .candidate-avatar { width: 36px; height: 36px; flex-basis: 36px; } }
+.party-filter-wrap { display: flex; align-items: center; gap: 8px; margin: 8px 0 10px; }
+.party-filter-wrap label { color: var(--green-dark); font-size: 10px; font-weight: 800; white-space: nowrap; }
+.party-filter-wrap select { min-width: 0; flex: 1; height: 34px; padding: 0 10px; border: 1px solid #b9d98e; border-radius: 8px; background: #f5fbe9; color: var(--green-dark); font-size: 11px; font-weight: 700; outline: none; }
+.party-filter-wrap select:focus { border-color: var(--yellow); box-shadow: 0 0 0 2px rgba(255, 210, 26, .25); }
 .show-more { width: 100%; margin-top: 4px; padding: 11px; border: 1px dashed #b9d98e; border-radius: 8px; background: #fff; color: var(--green-dark); font-size: 11px; font-weight: 700; }
 .selected-chip.filled { flex-basis: 112px; }
