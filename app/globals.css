@@ -83,3 +83,72 @@ button { cursor: pointer; }
 
 /* Mantém tokens shadcn disponíveis para componentes futuros. */
 @theme inline { --color-border: var(--line); --color-background: var(--paper); --color-foreground: var(--ink); }
+
+/* Direção visual mobile: verde brasileiro, amarelo solar e cartões claros. */
+:root {
+  --ink: #102f28;
+  --muted: #607b70;
+  --paper: #f4f8f3;
+  --line: #dce9df;
+  --green: #087a4b;
+  --green-dark: #005b38;
+  --mint: #e2f4e8;
+  --orange: #ffd21a;
+  --cream: #fff9d9;
+}
+.app-shell { background: linear-gradient(180deg, #f7fbf6 0%, #eef7ee 100%); }
+.topbar { background: rgba(255,255,255,.92); border-bottom-color: #d9e8dc; }
+.brand-mark { border-color: var(--green); background: var(--green); transform: none; }
+.brand-mark:before, .brand-mark:after, .brand-mark span { background: #fff; }
+.brand strong { color: var(--green-dark); font-family: Arial, Helvetica, sans-serif; font-weight: 900; letter-spacing: -1.5px; }
+.brand small { color: var(--green); }
+.share-button { background: var(--orange); color: #173d2c; box-shadow: none; }
+.hero { padding-top: 42px; }
+.eyebrow { color: var(--green); }
+.hero h1 { font-family: Arial, Helvetica, sans-serif; font-weight: 900; letter-spacing: -3px; color: var(--green-dark); }
+.hero h1 em { color: #e0a900; font-style: normal; }
+.hero p { color: #526f63; }
+.hero-note { color: var(--green); }
+.hero-seal { border-color: #c5dfca; color: var(--green); }
+.hero-seal:before { border-color: #9bc8a9; }
+.builder-card, .slip-card { border-color: #d8e8dc; border-radius: 18px; box-shadow: 0 12px 30px rgba(0,91,56,.1); }
+.builder-card { background: #fff; }
+.card-heading h2, .slip-top h2 { font-family: Arial, Helvetica, sans-serif; font-weight: 900; color: var(--green-dark); }
+.section-number { color: #e3ae00; }
+.progress-label { color: var(--green); background: #e5f5e9; }
+.location-row select { border-color: #cfe2d5; background: #f8fcf8; }
+.office-tab.active { color: var(--green); }
+.office-tab.active:after { height: 3px; background: var(--orange); }
+.candidate-area { background: #fbfefb; border: 1px solid #e2eee4; border-radius: 14px; padding: 17px 15px 12px; }
+.search-wrap { border-color: #cfe2d5; background: #fff; border-radius: 10px; }
+.candidate { border-bottom-color: #e4eee6; }
+.candidate:hover, .candidate.selected { background: #edf8ef; }
+.candidate-number { color: var(--green-dark); background: var(--orange); border-radius: 7px; padding: 4px 6px; }
+.radio { border-color: #b9d2c1; }
+.candidate.selected .radio { background: var(--green); border-color: var(--green); color: #fff; }
+.slip-card { background: linear-gradient(145deg, #00683f, #087a4b); }
+.print-button { background: var(--orange); color: #163d2a; }
+.footer a { color: var(--green); }
+
+@media (max-width: 600px) {
+  .app-shell { min-width: 0; }
+  .hero { padding: 30px 16px 22px; }
+  .hero h1 { font-size: 40px; line-height: .98; }
+  .hero p { font-size: 13px; }
+  .content-grid { gap: 12px; padding: 0 10px 24px; }
+  .builder-card { padding: 15px 12px 17px; border-radius: 16px; }
+  .card-heading h2 { font-size: 20px; }
+  .card-heading p { font-size: 10px; }
+  .progress-label { padding: 6px 7px; font-size: 8px; }
+  .location-row { background: #f3faf4; margin: 0 -1px; padding: 11px 8px; border-radius: 10px; }
+  .office-tabs { margin: 0 -12px; padding: 0 12px; }
+  .office-tab { min-height: 62px; }
+  .candidate-area { margin-top: 12px; padding: 14px 10px 9px; }
+  .candidate-title h3 { font-size: 18px; }
+  .search-wrap { height: 40px; }
+  .candidate { min-height: 57px; padding: 9px 2px; }
+  .candidate-avatar { background: var(--green); color: #fff; }
+  .candidate-info strong { font-size: 11px; }
+  .candidate-number { font-size: 14px; }
+  .slip-card { border-radius: 16px; }
+}
