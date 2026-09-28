@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import QRCode from 'qrcode'
 
 // Em 2026 o eleitor vota 6 vezes. Senado renova 2/3: são 2 votos para senador.
 type Office = 'Deputado federal' | 'Deputado estadual' | '1º Senador' | '2º Senador' | 'Governador' | 'Presidente'
@@ -70,6 +71,12 @@ export default function Page() {
   // Deputados passam de mil por estado: renderiza aos poucos pra não travar o celular.
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [selectionHydrated, setSelectionHydrated] = useState(false)
+  const [donationOpen, setDonationOpen] = useState(false)
+  const [donationAmount, setDonationAmount] = useState('2')
+  const [pixCopied, setPixCopied] = useState(false)
+  const [qrCodeUrl, setQrCodeUrl] = useState('')
+
+  const pixKey = '641a1e61-9c0d-407b-bc06-30010099a536'
 
   const activeApi = offices.find((office) => office.name === activeOffice)!.api
   const cacheKey = `${activeApi}|${state || 'BR'}`
@@ -250,6 +257,18 @@ export default function Page() {
   }
   }
 
+  const copyPixKey = async () => {
+    await navigator.clipboard.writeText(pixKey)
+    setPixCopied(true)
+    window.setTimeout(() => setPixCopied(false), 2200)
+  }
+
+  useEffect(() => {
+    QRCode.toDataURL(`PIX\nChave: ${pixKey}\nValor: R$ ${donationAmount || '0'}`, { width: 220, margin: 1, color: { dark: '#005b38', light: '#f8fff2' } })
+      .then(setQrCodeUrl)
+      .catch(() => setQrCodeUrl(''))
+  }, [donationAmount])
+
   const activeDigits = offices.find((item) => item.name === activeOffice)?.digits
 
   return (
@@ -339,7 +358,30 @@ export default function Page() {
 
       </div>
 
+      <section className="coffee-support" aria-label="Apoie o projeto">
+        <div><strong>Doe um cafezinho</strong><span>Ajude a manter a Colinha no ar.</span></div>
+        <button onClick={() => setDonationOpen(true)}>Doar R$ 2</button>
+      </section>
+
       <footer className="footer"><span>Uma ferramenta cidadã, sem vínculo com partidos políticos.</span><span>Consulte também <a href="https://www.tse.jus.br/" target="_blank" rel="noreferrer">tse.jus.br ↗</a></span></footer>
+
+      {donationOpen && (
+        <div className="donation-backdrop" role="presentation" onClick={() => setDonationOpen(false)}>
+          <section className="donation-modal" role="dialog" aria-modal="true" aria-labelledby="donation-title" onClick={(event) => event.stopPropagation()}>
+            <button className="modal-close" onClick={() => setDonationOpen(false)} aria-label="Fechar">×</button>
+            <span className="donation-kicker">APOIE A COLINHA</span>
+            <h2 id="donation-title">Um cafezinho para nós?</h2>
+            <p>Escolha um valor ou digite quanto quer contribuir.</p>
+            <div className="donation-values" role="group" aria-label="Valor da doação">
+              {['1', '2', '5'].map((value) => <button key={value} className={donationAmount === value ? 'active' : ''} onClick={() => setDonationAmount(value)}>R$ {value}</button>)}
+              <label className="custom-value"><span>R$</span><input inputMode="decimal" value={['1', '2', '5'].includes(donationAmount) ? '' : donationAmount} onChange={(event) => setDonationAmount(event.target.value.replace(',', '.'))} placeholder="Outro valor" aria-label="Outro valor" /></label>
+            </div>
+            {qrCodeUrl ? <img className="pix-qr" src={qrCodeUrl} alt="QR Code para doação via Pix" /> : <div className="pix-qr qr-loading" aria-label="Gerando QR Code">Gerando QR Code...</div>}
+            <strong className="qr-caption">Escaneie com o app do seu banco</strong>
+            <div className="pix-key-row"><code>{pixKey}</code><button onClick={copyPixKey}>{pixCopied ? 'Copiada' : 'Copiar chave'}</button></div>
+          </section>
+        </div>
+      )}
     </main>
   )
 }
