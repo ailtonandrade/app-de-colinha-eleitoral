@@ -49,3 +49,42 @@ button { cursor: pointer; }
 }
 
 @media (min-width:601px) and (max-width:1100px) { .hero { padding-left:24px; padding-right:24px; }.hero-seal { margin-right:0; } }
+
+/* Paleta principal: verde em toda a tela, com amarelo para ação e destaque. */
+body { background:#004f32; color:#fff; }
+.app-shell { background:linear-gradient(145deg,#003f29 0%,#006b42 48%,#00834e 100%); color:#fff; }
+.topbar { background:rgba(0,63,41,.9); border-bottom-color:rgba(255,255,255,.14); }
+.brand strong, .hero h1 { color:#fff; }
+.brand small, .eyebrow, .hero h1 em, .hero-note { color:#ffe04a; }
+.secure, .hero p, .footer { color:#d8f5df; }
+.share-button { background:#ffd21a; color:#003f29; }
+.content-grid { margin-left:auto; margin-right:auto; }
+.builder-card, .slip-card { background:#075f3c; border-color:#48a96d; color:#fff; box-shadow:0 18px 42px rgba(0,35,21,.28); }
+.card-heading { border-bottom-color:rgba(216,245,223,.22); }
+.card-heading h2, .slip-top h2, .candidate-title h3 { color:#fff; }
+.card-heading p, .location-help, .location-row label, .mini-label, .office-tab, .office-tab small { color:#bfe8ca; }
+.progress-label { background:#ffd21a; color:#003f29; }
+.location-row select, .search-box input, .party-filter select { background:#f5fff1; color:#164832; border-color:#75c58d; }
+.office-tab.active { color:#ffe04a; }
+.office-tab.active:after { background:#ffe04a; }
+.candidate-area { background:#0a7046; color:#fff; }
+.candidate { background:#f5fff1; color:#164832; border-color:#8dcda0; }
+.candidate.selected { background:#dff6dc; border-color:#ffd21a; }
+.candidate-name, .candidate strong, .candidate-number { color:#075d3a; }
+.data-source { color:#c5ebce; }
+.slip-top, .slip-list, .slip-footer { color:#fff; }
+.slip-item { border-color:rgba(216,245,223,.2); }
+.slip-item strong, .slip-item b { color:#fff; }
+.slip-item small, .slip-state { color:#bfe8ca; }
+.coffee-support { background:linear-gradient(100deg,#08794a,#0b8c55); border-color:#66c47e; color:#fff; }
+.coffee-support span { color:#d8f5df; }
+.footer a { color:#ffe04a; }
+
+@media (max-width:600px) {
+  .app-shell { background:linear-gradient(160deg,#003f29 0%,#006b42 58%,#00834e 100%); }
+  .topbar { background:rgba(0,63,41,.94); }
+  .content-grid { padding-left:10px; padding-right:10px; }
+  .builder-card, .slip-card { border-radius:16px; }
+  .builder-card { background:#075f3c; }
+  .candidate-area { padding:16px 12px; }
+}
