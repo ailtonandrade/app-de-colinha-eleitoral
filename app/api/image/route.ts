@@ -17,7 +17,14 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(target, { headers: { Accept: 'image/*' }, next: { revalidate: 86400 } })
+    const response = await fetch(target, {
+      headers: {
+        Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        Referer: 'https://divulgacandcontas.tse.jus.br/',
+        'User-Agent': 'Mozilla/5.0',
+      },
+      next: { revalidate: 86400 },
+    })
     if (!response.ok) return new Response('Imagem indisponível', { status: response.status })
 
     const contentType = response.headers.get('content-type') || ''
