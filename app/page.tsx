@@ -284,6 +284,7 @@ export default function Page() {
         </a>
         <div className="top-actions">
           <span className="secure"><Icon>⌁</Icon> Gratuito e independente</span>
+          <button className="coffee-header-button" onClick={() => setDonationOpen(true)}>Doe um cafezinho</button>
           <button className="share-button" onClick={share}><Icon>↗</Icon>{copied ? 'Link copiado' : 'Compartilhar'}</button>
         </div>
       </header>
@@ -362,11 +363,6 @@ export default function Page() {
         </section>
 
       </div>
-
-      <section className="coffee-support" aria-label="Apoie o projeto">
-        <div><strong>Doe um cafezinho</strong><span>Ajude a manter a Colinha no ar.</span></div>
-        <button onClick={() => setDonationOpen(true)}>Doar R$ 2</button>
-      </section>
 
       <footer className="footer"><span>Uma ferramenta cidadã, sem vínculo com partidos políticos.</span><span>Consulte também <a href="https://www.tse.jus.br/" target="_blank" rel="noreferrer">tse.jus.br ↗</a></span></footer>
 
