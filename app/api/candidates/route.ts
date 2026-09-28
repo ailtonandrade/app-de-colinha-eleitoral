@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import fallbackCandidates from '@/data/candidates-2026.json'
 
 const TSE_API = 'https://divulgacandcontas.tse.jus.br/divulga/rest/v1'
 // ID oficial da "Eleição Geral Federal 2026" em /eleicao/ordinarias.
@@ -69,11 +70,15 @@ export async function GET(request: Request) {
       if (!response.ok) return null
       return extractCandidates(await response.json(), uf)
     }))
-    if (results.every((result) => result === null)) throw new Error('TSE indisponível')
-    const candidates = Array.from(new Map(results.flatMap((result) => result || []).map((candidate: any) => [candidate.id, candidate])).values())
-      .sort((a: any, b: any) => a.name.localeCompare(b.name, 'pt-BR'))
-    return NextResponse.json({ candidates, source: 'TSE', scope: isNational ? 'BR' : scopedState || 'BR' })
+    const tseCandidates = Array.from(new Map(results.flatMap((result) => result || []).map((candidate: any) => [candidate.id, candidate])).values())
+    const candidates = tseCandidates.length > 0
+      ? tseCandidates.sort((a: any, b: any) => a.name.localeCompare(b.name, 'pt-BR'))
+      : isNational
+        ? (fallbackCandidates.Presidente || [])
+        : []
+    return NextResponse.json({ candidates, source: tseCandidates.length > 0 ? 'TSE' : 'TSE (lista de contingência)', scope: isNational ? 'BR' : scopedState || 'BR' })
   } catch {
+    if (isNational) return NextResponse.json({ candidates: fallbackCandidates.Presidente || [], source: 'TSE (lista de contingência)', scope: 'BR' })
     return NextResponse.json({ candidates: [], error: 'Não foi possível consultar os dados oficiais do TSE agora. Tente novamente em instantes.' }, { status: 502 })
   }
 }
