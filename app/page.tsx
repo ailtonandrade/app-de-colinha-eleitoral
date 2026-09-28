@@ -23,9 +23,12 @@ const offices: { name: Office; hint: string; digits: number }[] = [
 
 const candidates: Record<Office, Candidate[]> = {
   Presidente: [
-    { id: 'pres-1', name: 'Maria Silva', number: '13', party: 'PT' },
-    { id: 'pres-2', name: 'João Oliveira', number: '22', party: 'PL' },
-    { id: 'pres-3', name: 'Ana Costa', number: '40', party: 'PSB' },
+    { id: 'pres-lula', name: 'Luiz Inácio Lula da Silva', number: '13', party: 'PT' },
+    { id: 'pres-flavio', name: 'Flávio Bolsonaro', number: '22', party: 'PL' },
+    { id: 'pres-renan', name: 'Renan Santos', number: '—', party: 'Partido a confirmar' },
+    { id: 'pres-augusto', name: 'Augusto Cury', number: '—', party: 'Partido a confirmar' },
+    { id: 'pres-1', name: 'Maria Silva', number: '40', party: 'PSB' },
+    { id: 'pres-2', name: 'João Oliveira', number: '15', party: 'MDB' },
   ],
   Governador: [
     { id: 'gov-1', name: 'Carlos Mendes', number: '15', party: 'MDB', state: 'SP' },
@@ -54,7 +57,7 @@ function Icon({ children }: { children: React.ReactNode }) {
 }
 
 export default function Page() {
-  const [state, setState] = useState('SP')
+  const [state, setState] = useState('')
   const [activeOffice, setActiveOffice] = useState<Office>('Presidente')
   const [selected, setSelected] = useState<Partial<Record<Office, Candidate>>>({})
   const [search, setSearch] = useState('')
@@ -73,11 +76,12 @@ export default function Page() {
 
   const filteredCandidates = useMemo(() => {
     const term = search.toLowerCase().trim()
-    if (!term) return candidates[activeOffice]
-    return candidates[activeOffice].filter((candidate) =>
-      `${candidate.name} ${candidate.number} ${candidate.party}`.toLowerCase().includes(term),
-    )
-  }, [activeOffice, search])
+    return candidates[activeOffice].filter((candidate) => {
+      const matchesState = !state || !candidate.state || candidate.state === state
+      const matchesSearch = !term || `${candidate.name} ${candidate.number} ${candidate.party}`.toLowerCase().includes(term)
+      return matchesState && matchesSearch
+    })
+  }, [activeOffice, search, state])
 
   const progress = Object.keys(selected).length
   const chooseCandidate = (candidate: Candidate) => {
@@ -126,8 +130,8 @@ export default function Page() {
 
           <div className="location-row">
             <label htmlFor="state">Seu estado</label>
-            <select id="state" value={state} onChange={(event) => setState(event.target.value)}><option>SP — São Paulo</option><option>RJ — Rio de Janeiro</option><option>MG — Minas Gerais</option><option>BA — Bahia</option></select>
-            <span className="location-help">Os candidatos mudam de acordo com o estado.</span>
+            <select id="state" value={state} onChange={(event) => setState(event.target.value)}><option value="">Todos os estados</option><option value="SP">SP — São Paulo</option><option value="RJ">RJ — Rio de Janeiro</option><option value="MG">MG — Minas Gerais</option><option value="BA">BA — Bahia</option></select>
+            <span className="location-help">Comece vendo candidatos de todos os estados.</span>
           </div>
 
           <div className="office-tabs" role="tablist" aria-label="Cargos">
@@ -145,7 +149,7 @@ export default function Page() {
             <div className="candidate-list">
               {filteredCandidates.map((candidate) => <button className={selected[activeOffice]?.id === candidate.id ? 'candidate selected' : 'candidate'} key={candidate.id} onClick={() => chooseCandidate(candidate)}><span className="candidate-avatar">{candidate.name.split(' ').map((word) => word[0]).slice(0, 2).join('')}</span><span className="candidate-info"><strong>{candidate.name}</strong><small>{candidate.party}{candidate.state ? ` · ${candidate.state}` : ''}</small></span><span className="candidate-number">{candidate.number}</span><span className="radio">{selected[activeOffice]?.id === candidate.id ? '✓' : ''}</span></button>)}
             </div>
-            <p className="data-source"><Icon>⌁</Icon> Dados oficiais do TSE · Atualizados para 2026</p>
+            <p className="data-source"><Icon>⌁</Icon> Consulte os dados oficiais do TSE antes de votar.</p>
           </div>
         </section>
 
