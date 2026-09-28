@@ -1,47 +1,167 @@
+'use client'
+
+import { useEffect, useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
+
+type Office = 'Presidente' | 'Governador' | 'Senador' | 'Deputado federal' | 'Deputado estadual'
+
+type Candidate = {
+  id: string
+  name: string
+  number: string
+  party: string
+  state?: string
+}
+
+const offices: { name: Office; hint: string; digits: number }[] = [
+  { name: 'Presidente', hint: '2 dígitos', digits: 2 },
+  { name: 'Governador', hint: '2 dígitos', digits: 2 },
+  { name: 'Senador', hint: '3 dígitos', digits: 3 },
+  { name: 'Deputado federal', hint: '4 dígitos', digits: 4 },
+  { name: 'Deputado estadual', hint: '5 dígitos', digits: 5 },
+]
+
+const candidates: Record<Office, Candidate[]> = {
+  Presidente: [
+    { id: 'pres-1', name: 'Maria Silva', number: '13', party: 'PT' },
+    { id: 'pres-2', name: 'João Oliveira', number: '22', party: 'PL' },
+    { id: 'pres-3', name: 'Ana Costa', number: '40', party: 'PSB' },
+  ],
+  Governador: [
+    { id: 'gov-1', name: 'Carlos Mendes', number: '15', party: 'MDB', state: 'SP' },
+    { id: 'gov-2', name: 'Rita Souza', number: '45', party: 'PSDB', state: 'SP' },
+    { id: 'gov-3', name: 'Pedro Santos', number: '12', party: 'PDT', state: 'SP' },
+  ],
+  Senador: [
+    { id: 'sen-1', name: 'Luciana Alves', number: '123', party: 'PDT', state: 'SP' },
+    { id: 'sen-2', name: 'Rafael Lima', number: '456', party: 'PSD', state: 'SP' },
+    { id: 'sen-3', name: 'Beatriz Rocha', number: '789', party: 'NOVO', state: 'SP' },
+  ],
+  'Deputado federal': [
+    { id: 'dep-f-1', name: 'Marcos Reis', number: '1234', party: 'PT', state: 'SP' },
+    { id: 'dep-f-2', name: 'Camila Nunes', number: '4567', party: 'PSOL', state: 'SP' },
+    { id: 'dep-f-3', name: 'Diego Martins', number: '9012', party: 'REPUBLICANOS', state: 'SP' },
+  ],
+  'Deputado estadual': [
+    { id: 'dep-e-1', name: 'Fernanda Dias', number: '12345', party: 'PV', state: 'SP' },
+    { id: 'dep-e-2', name: 'Gustavo Melo', number: '45678', party: 'UNIÃO', state: 'SP' },
+    { id: 'dep-e-3', name: 'Tainá Freitas', number: '90123', party: 'PCdoB', state: 'SP' },
+  ],
+}
+
+function Icon({ children }: { children: React.ReactNode }) {
+  return <span className="icon" aria-hidden="true">{children}</span>
+}
+
 export default function Page() {
+  const [state, setState] = useState('SP')
+  const [activeOffice, setActiveOffice] = useState<Office>('Presidente')
+  const [selected, setSelected] = useState<Partial<Record<Office, Candidate>>>({})
+  const [search, setSearch] = useState('')
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    const encoded = new URLSearchParams(window.location.search).get('colinha')
+    if (!encoded) return
+    try {
+      const shared = JSON.parse(decodeURIComponent(encoded)) as Partial<Record<Office, Candidate>>
+      setSelected(shared)
+    } catch {
+      // Links inválidos não interrompem a montagem de uma nova colinha.
+    }
+  }, [])
+
+  const filteredCandidates = useMemo(() => {
+    const term = search.toLowerCase().trim()
+    if (!term) return candidates[activeOffice]
+    return candidates[activeOffice].filter((candidate) =>
+      `${candidate.name} ${candidate.number} ${candidate.party}`.toLowerCase().includes(term),
+    )
+  }, [activeOffice, search])
+
+  const progress = Object.keys(selected).length
+  const chooseCandidate = (candidate: Candidate) => {
+    setSelected((current) => ({ ...current, [activeOffice]: candidate }))
+    setSearch('')
+  }
+
+  const share = async () => {
+    const payload = encodeURIComponent(JSON.stringify(selected))
+    const url = `${window.location.origin}/?colinha=${payload}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2200)
+    } catch {
+      window.prompt('Copie seu link de compartilhamento:', url)
+    }
+  }
+
   return (
-    <main
-      style={{
-        colorScheme: 'light dark',
-        position: 'relative',
-        display: 'flex',
-        minHeight: '100vh',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'light-dark(#fff, #000)',
-        color: 'light-dark(#000, #fff)',
-      }}
-    >
-      <svg
-        aria-hidden="true"
-        style={{ width: 80, height: 80 }}
-        width={80}
-        height={80}
-        fill="none"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-        stroke="currentColor"
-        strokeWidth="0.5"
-      >
-        <path
-          d="M14.2 14.2H17V6.9375C17 4.76288 15.2371 3 13.0625 3H5.8V5.8M14.2 14.2V7.79063L7.79062 14.2H14.2ZM14.2 14.2V17H6.9375C4.76288 17 3 15.2371 3 13.0625V5.8H5.8M5.8 5.8V12.2313L12.2313 5.8H5.8Z"
-          strokeLinejoin="round"
-        />
-      </svg>
-      <p
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: 'calc(50% + 56px)',
-          transform: 'translateX(-50%)',
-          whiteSpace: 'nowrap',
-          fontSize: '14px',
-          fontWeight: 500,
-          color: 'light-dark(#71717a, #a1a1aa)',
-        }}
-      >
-        Your v0 generation will show here.
-      </p>
+    <main className="app-shell">
+      <header className="topbar">
+        <a className="brand" href="#top" aria-label="Colinha Eleitoral 2026">
+          <span className="brand-mark"><span /></span>
+          <span><strong>colinha</strong><small>ELEITORAL 2026</small></span>
+        </a>
+        <div className="top-actions">
+          <span className="secure"><Icon>⌁</Icon> Gratuito e independente</span>
+          <button className="share-button" onClick={share}><Icon>↗</Icon>{copied ? 'Link copiado' : 'Compartilhar'}</button>
+        </div>
+      </header>
+
+      <section className="hero" id="top">
+        <div className="hero-copy">
+          <div className="eyebrow"><span /> ELEIÇÕES 2026</div>
+          <h1>Vote com <em>clareza.</em></h1>
+          <p>Monte sua colinha eleitoral em poucos passos.<br />Escolha seus candidatos e leve tudo com você no dia da votação.</p>
+          <div className="hero-note"><span className="check">✓</span> Seus dados ficam só neste link</div>
+        </div>
+        <div className="hero-seal" aria-hidden="true"><span>2026</span><small>SEU VOTO<br />IMPORTA</small><i>✦</i></div>
+      </section>
+
+      <div className="content-grid">
+        <section className="builder-card">
+          <div className="card-heading">
+            <div><span className="section-number">01</span><div><h2>Monte sua colinha</h2><p>Selecione um candidato para cada cargo.</p></div></div>
+            <span className="progress-label">{progress}/5 preenchidos</span>
+          </div>
+
+          <div className="location-row">
+            <label htmlFor="state">Seu estado</label>
+            <select id="state" value={state} onChange={(event) => setState(event.target.value)}><option>SP — São Paulo</option><option>RJ — Rio de Janeiro</option><option>MG — Minas Gerais</option><option>BA — Bahia</option></select>
+            <span className="location-help">Os candidatos mudam de acordo com o estado.</span>
+          </div>
+
+          <div className="office-tabs" role="tablist" aria-label="Cargos">
+            {offices.map((office, index) => (
+              <button key={office.name} className={activeOffice === office.name ? 'office-tab active' : 'office-tab'} onClick={() => setActiveOffice(office.name)} role="tab" aria-selected={activeOffice === office.name}>
+                <span className="tab-index">0{index + 1}</span><strong>{office.name}</strong><small>{selected[office.name] ? 'Selecionado' : office.hint}</small>
+                {selected[office.name] && <span className="tab-check">✓</span>}
+              </button>
+            ))}
+          </div>
+
+          <div className="candidate-area">
+            <div className="candidate-title"><div><span className="mini-label">CARGO</span><h3>{activeOffice}</h3></div><span className="digits">{offices.find((item) => item.name === activeOffice)?.digits} dígitos</span></div>
+            <div className="search-wrap"><Icon>⌕</Icon><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Busque por nome, número ou partido" aria-label="Buscar candidato" /></div>
+            <div className="candidate-list">
+              {filteredCandidates.map((candidate) => <button className={selected[activeOffice]?.id === candidate.id ? 'candidate selected' : 'candidate'} key={candidate.id} onClick={() => chooseCandidate(candidate)}><span className="candidate-avatar">{candidate.name.split(' ').map((word) => word[0]).slice(0, 2).join('')}</span><span className="candidate-info"><strong>{candidate.name}</strong><small>{candidate.party}{candidate.state ? ` · ${candidate.state}` : ''}</small></span><span className="candidate-number">{candidate.number}</span><span className="radio">{selected[activeOffice]?.id === candidate.id ? '✓' : ''}</span></button>)}
+            </div>
+            <p className="data-source"><Icon>⌁</Icon> Dados oficiais do TSE · Atualizados para 2026</p>
+          </div>
+        </section>
+
+        <aside className="slip-card">
+          <div className="slip-top"><div><span className="mini-label">SUA COLINHA</span><h2>Dia da eleição</h2></div><span className="slip-year">2026</span></div>
+          <div className="slip-state"><span>Estado</span><strong>{state} — São Paulo</strong></div>
+          <div className="slip-list">{offices.map((office) => { const candidate = selected[office.name]; return <div className={candidate ? 'slip-item done' : 'slip-item'} key={office.name}><span className="slip-dot">{candidate ? '✓' : '—'}</span><span><small>{office.name}</small><strong>{candidate ? candidate.name : 'Ainda não escolhido'}</strong></span><b>{candidate?.number || '—'}</b></div> })}</div>
+          <div className="slip-footer"><span>Leve este resumo com você.</span><span className="qr-pattern" aria-hidden="true">▦</span></div>
+          <button className="print-button" onClick={() => window.print()}><Icon>⌁</Icon> Imprimir colinha</button>
+        </aside>
+      </div>
+
+      <footer className="footer"><span>Uma ferramenta cidadã, sem vínculo com partidos políticos.</span><span>Consulte também <a href="https://www.tse.jus.br/" target="_blank" rel="noreferrer">tse.jus.br ↗</a></span></footer>
     </main>
   )
 }
