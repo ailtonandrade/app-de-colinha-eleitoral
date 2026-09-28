@@ -68,6 +68,7 @@ export default function Page() {
   const [copied, setCopied] = useState(false)
   // Deputados passam de mil por estado: renderiza aos poucos pra não travar o celular.
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const [selectionHydrated, setSelectionHydrated] = useState(false)
 
   const activeApi = offices.find((office) => office.name === activeOffice)!.api
   const cacheKey = `${activeApi}|${state || 'BR'}`
@@ -77,14 +78,22 @@ export default function Page() {
     const sharedState = params.get('uf')
     if (sharedState && states.some(([uf]) => uf === sharedState)) setState(sharedState)
     const encoded = params.get('colinha')
-    if (!encoded) return
+    const saved = window.localStorage.getItem('colinha-eleitoral-2026')
     try {
-      const shared = JSON.parse(encoded) as Record<string, Candidate>
-      setSelected(Object.fromEntries(Object.entries(shared).filter(([office]) => offices.some((item) => item.name === office))))
+      const source = encoded ? JSON.parse(encoded) : saved ? JSON.parse(saved) : null
+      if (source && typeof source === 'object') {
+        setSelected(Object.fromEntries(Object.entries(source).filter(([office]) => offices.some((item) => item.name === office))))
+      }
     } catch {
-      // Links inválidos não interrompem a montagem de uma nova colinha.
+      // Links ou dados locais inválidos não interrompem a montagem.
     }
+    setSelectionHydrated(true)
   }, [])
+
+  useEffect(() => {
+    if (!selectionHydrated) return
+    window.localStorage.setItem('colinha-eleitoral-2026', JSON.stringify(selected))
+  }, [selected, selectionHydrated])
 
   useEffect(() => {
     if (candidateData[cacheKey]) { setNeedsState(false); setDataError(''); return }
