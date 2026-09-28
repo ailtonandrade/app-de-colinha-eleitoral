@@ -1,0 +1,17 @@
+{
+  "Presidente": [
+    {"id":"pres-01","name":"Samara Martins","number":"16","party":"UP","state":"BR"},
+    {"id":"pres-02","name":"Romeu Zema","number":"30","party":"NOVO","state":"BR"},
+    {"id":"pres-03","name":"Renan Santos","number":"15","party":"MISSÃO","state":"BR"},
+    {"id":"pres-04","name":"Hertz Dias","number":"16","party":"PSTU","state":"BR"},
+    {"id":"pres-05","name":"Luiz Inácio Lula da Silva","number":"13","party":"PT","state":"BR"},
+    {"id":"pres-06","name":"Wilson Grassi","number":"27","party":"DEMOCRATA","state":"BR"},
+    {"id":"pres-07","name":"Flavio Bolsonaro","number":"22","party":"PL","state":"BR"},
+    {"id":"pres-08","name":"Augusto Cury","number":"20","party":"Brasil dos Nossos Sonhos","state":"BR"},
+    {"id":"pres-09","name":"Edmilson Costa","number":"21","party":"PCB","state":"BR"},
+    {"id":"pres-10","name":"Ronaldo Caiado","number":"55","party":"PSD","state":"BR"},
+    {"id":"pres-11","name":"Clariana Barão","number":"36","party":"DC","state":"BR"},
+    {"id":"pres-12","name":"Rui Costa Pimenta","number":"29","party":"PCO","state":"BR"},
+    {"id":"pres-13","name":"Leonardo de Araujo","number":"28","party":"PRTB","state":"BR"}
+  ]
+}
