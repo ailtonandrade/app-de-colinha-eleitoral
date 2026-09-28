@@ -22,35 +22,12 @@ const offices: { name: Office; hint: string; digits: number }[] = [
   { name: 'Deputado estadual', hint: '5 dígitos', digits: 5 },
 ]
 
-const candidates: Record<Office, Candidate[]> = {
-  Presidente: [
-    { id: 'pres-lula', name: 'Luiz Inácio Lula da Silva', number: '13', party: 'PT', photo: 'https://commons.wikimedia.org/wiki/Special:FilePath/Luiz%20In%C3%A1cio%20Lula%20da%20Silva%20-%20foto%20oficial%203x4.jpg' },
-    { id: 'pres-flavio', name: 'Flávio Bolsonaro', number: '22', party: 'PL', photo: 'https://commons.wikimedia.org/wiki/Special:FilePath/Fl%C3%A1vio%20Bolsonaro%20em%202019.jpg' },
-    { id: 'pres-renan', name: 'Renan Santos', number: '—', party: 'Partido a confirmar', photo: 'https://ui-avatars.com/api/?name=Renan+Santos&background=0b6b45&color=fff&size=128' },
-    { id: 'pres-augusto', name: 'Augusto Cury', number: '—', party: 'Partido a confirmar', photo: 'https://ui-avatars.com/api/?name=Augusto+Cury&background=0b6b45&color=fff&size=128' },
-    { id: 'pres-1', name: 'Maria Silva', number: '40', party: 'PSB' },
-    { id: 'pres-2', name: 'João Oliveira', number: '15', party: 'MDB' },
-  ],
-  Governador: [
-    { id: 'gov-1', name: 'Carlos Mendes', number: '15', party: 'MDB', state: 'SP' },
-    { id: 'gov-2', name: 'Rita Souza', number: '45', party: 'PSDB', state: 'SP' },
-    { id: 'gov-3', name: 'Pedro Santos', number: '12', party: 'PDT', state: 'SP' },
-  ],
-  Senador: [
-    { id: 'sen-1', name: 'Luciana Alves', number: '123', party: 'PDT', state: 'SP' },
-    { id: 'sen-2', name: 'Rafael Lima', number: '456', party: 'PSD', state: 'SP' },
-    { id: 'sen-3', name: 'Beatriz Rocha', number: '789', party: 'NOVO', state: 'SP' },
-  ],
-  'Deputado federal': [
-    { id: 'dep-f-1', name: 'Marcos Reis', number: '1234', party: 'PT', state: 'SP' },
-    { id: 'dep-f-2', name: 'Camila Nunes', number: '4567', party: 'PSOL', state: 'SP' },
-    { id: 'dep-f-3', name: 'Diego Martins', number: '9012', party: 'REPUBLICANOS', state: 'SP' },
-  ],
-  'Deputado estadual': [
-    { id: 'dep-e-1', name: 'Fernanda Dias', number: '12345', party: 'PV', state: 'SP' },
-    { id: 'dep-e-2', name: 'Gustavo Melo', number: '45678', party: 'UNIÃO', state: 'SP' },
-    { id: 'dep-e-3', name: 'Tainá Freitas', number: '90123', party: 'PCdoB', state: 'SP' },
-  ],
+const emptyCandidates: Record<Office, Candidate[]> = {
+  Presidente: [],
+  Governador: [],
+  Senador: [],
+  'Deputado federal': [],
+  'Deputado estadual': [],
 }
 
 function Icon({ children }: { children: React.ReactNode }) {
@@ -61,6 +38,9 @@ export default function Page() {
   const [state, setState] = useState('')
   const [activeOffice, setActiveOffice] = useState<Office>('Presidente')
   const [selected, setSelected] = useState<Partial<Record<Office, Candidate>>>({})
+  const [candidateData, setCandidateData] = useState(emptyCandidates)
+  const [loadingCandidates, setLoadingCandidates] = useState(false)
+  const [dataError, setDataError] = useState('')
   const [search, setSearch] = useState('')
   const [copied, setCopied] = useState(false)
 
@@ -75,9 +55,25 @@ export default function Page() {
     }
   }, [])
 
+  useEffect(() => {
+    let cancelled = false
+    setLoadingCandidates(true)
+    setDataError('')
+    const scope = state || 'BR'
+    fetch(`/api/candidates?office=${encodeURIComponent(activeOffice)}&state=${scope}`)
+      .then(async (response) => {
+        const payload = await response.json()
+        if (!response.ok) throw new Error(payload.error || 'Falha ao consultar o TSE')
+        if (!cancelled) setCandidateData((current) => ({ ...current, [activeOffice]: payload.candidates }))
+      })
+      .catch((error) => { if (!cancelled) setDataError(error.message) })
+      .finally(() => { if (!cancelled) setLoadingCandidates(false) })
+    return () => { cancelled = true }
+  }, [activeOffice, state])
+
   const filteredCandidates = useMemo(() => {
     const term = search.toLowerCase().trim()
-    return candidates[activeOffice].filter((candidate) => {
+    return candidateData[activeOffice].filter((candidate) => {
       const matchesState = !state || !candidate.state || candidate.state === state
       const matchesSearch = !term || `${candidate.name} ${candidate.number} ${candidate.party}`.toLowerCase().includes(term)
       return matchesState && matchesSearch
@@ -148,7 +144,10 @@ export default function Page() {
             <div className="candidate-title"><div><span className="mini-label">CARGO</span><h3>{activeOffice}</h3></div><span className="digits">{offices.find((item) => item.name === activeOffice)?.digits} dígitos</span></div>
             <div className="search-wrap"><Icon>⌕</Icon><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Busque por nome, número ou partido" aria-label="Buscar candidato" /></div>
             <div className="candidate-list">
-              {filteredCandidates.map((candidate) => <button className={selected[activeOffice]?.id === candidate.id ? 'candidate selected' : 'candidate'} key={candidate.id} onClick={() => chooseCandidate(candidate)}><span className="candidate-avatar">{candidate.photo ? <img src={candidate.photo} alt={`Foto de ${candidate.name}`} loading="lazy" /> : candidate.name.split(' ').map((word) => word[0]).slice(0, 2).join('')}</span><span className="candidate-info"><strong>{candidate.name}</strong><small>{candidate.party}{candidate.state ? ` · ${candidate.state}` : ''}</small></span><span className="candidate-number">{candidate.number}</span><span className="radio">{selected[activeOffice]?.id === candidate.id ? '✓' : ''}</span></button>)}
+              {loadingCandidates && <p className="empty-state">Consultando a lista oficial do TSE...</p>}
+              {!loadingCandidates && dataError && <p className="empty-state">{dataError}</p>}
+              {!loadingCandidates && !dataError && filteredCandidates.length === 0 && <p className="empty-state">Nenhuma candidatura encontrada para este cargo e filtro.</p>}
+              {!loadingCandidates && filteredCandidates.map((candidate) => <button className={selected[activeOffice]?.id === candidate.id ? 'candidate selected' : 'candidate'} key={candidate.id} onClick={() => chooseCandidate(candidate)}><span className="candidate-avatar">{candidate.photo ? <img src={candidate.photo} alt={`Foto de ${candidate.name}`} loading="lazy" /> : candidate.name.split(' ').map((word) => word[0]).slice(0, 2).join('')}</span><span className="candidate-info"><strong>{candidate.name}</strong><small>{candidate.party}{candidate.state ? ` · ${candidate.state}` : ''}</small></span><span className="candidate-number">{candidate.number}</span><span className="radio">{selected[activeOffice]?.id === candidate.id ? '✓' : ''}</span></button>)}
             </div>
             <p className="data-source"><Icon>⌁</Icon> Consulte os dados oficiais do TSE antes de votar.</p>
           </div>
