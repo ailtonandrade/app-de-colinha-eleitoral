@@ -55,10 +55,16 @@ export async function GET(request: Request) {
   try {
     const results = await Promise.all(states.map(async (uf) => {
       const cargo = office === 'Deputado estadual' && uf === 'DF' ? DEPUTADO_DISTRITAL : officeCodes[office]
-      const url = `${TSE_API}/candidatura/listar/2026/${uf}/${ELECTION_ID}/${cargo}/candidatos`
+      // A rota pública atual do DivulgaCandContas recebe ano, UF e cargo.
+      // O identificador da eleição é usado apenas na rota de fotos.
+      const url = `${TSE_API}/candidatura/listar/2026/${uf}/${cargo}/candidatos`
       const response = await fetch(url, {
         next: { revalidate: 3600 },
-        headers: { Accept: 'application/json' },
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'User-Agent': 'ColinhaEleitoral/2026 (consulta publica)',
+          Referer: 'https://divulgacandcontas.tse.jus.br/',
+        },
       })
       if (!response.ok) return null
       return extractCandidates(await response.json(), uf)
