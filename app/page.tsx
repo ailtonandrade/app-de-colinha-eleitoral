@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import QRCode from 'qrcode'
 
 // Em 2026 o eleitor vota 6 vezes. Senado renova 2/3: são 2 votos para senador.
 type Office = 'Deputado federal' | 'Deputado estadual' | '1º Senador' | '2º Senador' | 'Governador' | 'Presidente'
@@ -70,6 +71,12 @@ export default function Page() {
   // Deputados passam de mil por estado: renderiza aos poucos pra não travar o celular.
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [selectionHydrated, setSelectionHydrated] = useState(false)
+  const [donationOpen, setDonationOpen] = useState(false)
+  const [donationAmount, setDonationAmount] = useState('2')
+  const [pixCopied, setPixCopied] = useState(false)
+  const [qrCodeUrl, setQrCodeUrl] = useState('')
+
+  const pixKey = '641a1e61-9c0d-407b-bc06-30010099a536'
 
   const activeApi = offices.find((office) => office.name === activeOffice)!.api
   const cacheKey = `${activeApi}|${state || 'BR'}`
@@ -156,17 +163,111 @@ export default function Page() {
   }
 
   const share = async () => {
-    const params = new URLSearchParams({ colinha: JSON.stringify(selected) })
-    if (state) params.set('uf', state)
-    const url = `${window.location.origin}/?${params.toString()}`
-    try {
-      await navigator.clipboard.writeText(url)
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 2200)
-    } catch {
-      window.prompt('Copie seu link de compartilhamento:', url)
-    }
+  const params = new URLSearchParams({ colinha: JSON.stringify(selected) })
+  if (state) params.set('uf', state)
+  const url = `${window.location.origin}/?${params.toString()}`
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 1080
+  canvas.height = 1440
+  const context = canvas.getContext('2d')
+  if (!context) return
+
+  context.fillStyle = '#006b45'
+  context.fillRect(0, 0, canvas.width, canvas.height)
+  context.fillStyle = '#ffd600'
+  context.fillRect(0, 0, canvas.width, 18)
+  context.fillStyle = '#f4fbe9'
+  context.beginPath()
+  context.roundRect(36, 48, 1008, 1344, 36)
+  context.fill()
+  context.fillStyle = '#005c3b'
+  context.font = '700 58px Arial'
+  context.fillText('Minha colinha eleitoral', 84, 142)
+  context.fillStyle = '#6a7c70'
+  context.font = '500 30px Arial'
+  context.fillText(`Eleições 2026${state ? ` · ${state}` : ''}`, 84, 190)
+
+  const cardWidth = 450
+  const cardHeight = 310
+  const gap = 42
+  const startX = 72
+  const startY = 250
+  const loadImage = (source: string) => new Promise<HTMLImageElement>((resolve, reject) => {
+  const image = new Image()
+  image.crossOrigin = 'anonymous'
+  image.onload = () => resolve(image)
+  image.onerror = reject
+  image.src = source
+  })
+
+  await Promise.all(offices.map(async (office, index) => {
+  const candidate = selected[office.name]
+  const x = startX + (index % 2) * (cardWidth + gap)
+  const y = startY + Math.floor(index / 2) * (cardHeight + gap)
+  context.fillStyle = candidate ? '#087f50' : '#e7f2df'
+  context.beginPath()
+  context.roundRect(x, y, cardWidth, cardHeight, 26)
+  context.fill()
+  context.strokeStyle = candidate ? '#ffd600' : '#c9dbcc'
+  context.lineWidth = 5
+  context.stroke()
+  context.fillStyle = candidate ? '#dff7b8' : '#607267'
+  context.font = '600 25px Arial'
+  context.fillText(officeShort(office.name, state).toUpperCase(), x + 28, y + 48)
+  context.fillStyle = candidate ? '#ffffff' : '#567064'
+  context.font = '700 54px Arial'
+  context.fillText(candidate?.number || '—', x + 28, y + 118)
+  context.font = '500 27px Arial'
+  context.fillText(candidate?.party || 'Ainda não escolhido', x + 28, y + 164)
+  if (candidate?.photo) {
+  try {
+  const image = await loadImage(candidate.photo)
+  context.save()
+  context.beginPath()
+  context.arc(x + cardWidth - 82, y + 94, 48, 0, Math.PI * 2)
+  context.clip()
+  context.drawImage(image, x + cardWidth - 130, y + 46, 96, 96)
+  context.restore()
+  } catch {
+  // Mantém o card funcional quando a foto remota não permite uso no canvas.
   }
+  }
+  if (candidate) {
+  context.fillStyle = '#ffd600'
+  context.font = '700 32px Arial'
+  context.fillText('✓ escolhido', x + 28, y + 252)
+  }
+  }))
+
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92))
+  if (blob && navigator.share && navigator.canShare?.({ files: [new File([blob], 'minha-colinha.jpg', { type: 'image/jpeg' })] })) {
+  const file = new File([blob], 'minha-colinha.jpg', { type: 'image/jpeg' })
+  await navigator.share({ files: [file], title: 'Minha colinha eleitoral', text: 'Minha colinha para as eleições de 2026.' })
+  setCopied(true)
+  window.setTimeout(() => setCopied(false), 2200)
+  return
+  }
+  try {
+  await navigator.clipboard.writeText(url)
+  setCopied(true)
+  window.setTimeout(() => setCopied(false), 2200)
+  } catch {
+  window.prompt('Copie seu link de compartilhamento:', url)
+  }
+  }
+
+  const copyPixKey = async () => {
+    await navigator.clipboard.writeText(pixKey)
+    setPixCopied(true)
+    window.setTimeout(() => setPixCopied(false), 2200)
+  }
+
+  useEffect(() => {
+    QRCode.toDataURL(`PIX\nChave: ${pixKey}\nValor: R$ ${donationAmount || '0'}`, { width: 220, margin: 1, color: { dark: '#005b38', light: '#f8fff2' } })
+      .then(setQrCodeUrl)
+      .catch(() => setQrCodeUrl(''))
+  }, [donationAmount])
 
   const activeDigits = offices.find((item) => item.name === activeOffice)?.digits
 
@@ -257,7 +358,30 @@ export default function Page() {
 
       </div>
 
+      <section className="coffee-support" aria-label="Apoie o projeto">
+        <div><strong>Doe um cafezinho</strong><span>Ajude a manter a Colinha no ar.</span></div>
+        <button onClick={() => setDonationOpen(true)}>Doar R$ 2</button>
+      </section>
+
       <footer className="footer"><span>Uma ferramenta cidadã, sem vínculo com partidos políticos.</span><span>Consulte também <a href="https://www.tse.jus.br/" target="_blank" rel="noreferrer">tse.jus.br ↗</a></span></footer>
+
+      {donationOpen && (
+        <div className="donation-backdrop" role="presentation" onClick={() => setDonationOpen(false)}>
+          <section className="donation-modal" role="dialog" aria-modal="true" aria-labelledby="donation-title" onClick={(event) => event.stopPropagation()}>
+            <button className="modal-close" onClick={() => setDonationOpen(false)} aria-label="Fechar">×</button>
+            <span className="donation-kicker">APOIE A COLINHA</span>
+            <h2 id="donation-title">Um cafezinho para nós?</h2>
+            <p>Escolha um valor ou digite quanto quer contribuir.</p>
+            <div className="donation-values" role="group" aria-label="Valor da doação">
+              {['1', '2', '5'].map((value) => <button key={value} className={donationAmount === value ? 'active' : ''} onClick={() => setDonationAmount(value)}>R$ {value}</button>)}
+              <label className="custom-value"><span>R$</span><input inputMode="decimal" value={['1', '2', '5'].includes(donationAmount) ? '' : donationAmount} onChange={(event) => setDonationAmount(event.target.value.replace(',', '.'))} placeholder="Outro valor" aria-label="Outro valor" /></label>
+            </div>
+            {qrCodeUrl ? <img className="pix-qr" src={qrCodeUrl} alt="QR Code para doação via Pix" /> : <div className="pix-qr qr-loading" aria-label="Gerando QR Code">Gerando QR Code...</div>}
+            <strong className="qr-caption">Escaneie com o app do seu banco</strong>
+            <div className="pix-key-row"><code>{pixKey}</code><button onClick={copyPixKey}>{pixCopied ? 'Copiada' : 'Copiar chave'}</button></div>
+          </section>
+        </div>
+      )}
     </main>
   )
 }
