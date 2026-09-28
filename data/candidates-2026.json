@@ -1,17 +1,40 @@
 {
   "Presidente": [
-    {"id":"pres-01","name":"Samara Martins","number":"16","party":"UP","state":"BR"},
-    {"id":"pres-02","name":"Romeu Zema","number":"30","party":"NOVO","state":"BR"},
-    {"id":"pres-03","name":"Renan Santos","number":"15","party":"MISSÃO","state":"BR"},
-    {"id":"pres-04","name":"Hertz Dias","number":"16","party":"PSTU","state":"BR"},
-    {"id":"pres-05","name":"Luiz Inácio Lula da Silva","number":"13","party":"PT","state":"BR"},
-    {"id":"pres-06","name":"Wilson Grassi","number":"27","party":"DEMOCRATA","state":"BR"},
-    {"id":"pres-07","name":"Flavio Bolsonaro","number":"22","party":"PL","state":"BR"},
-    {"id":"pres-08","name":"Augusto Cury","number":"20","party":"Brasil dos Nossos Sonhos","state":"BR"},
-    {"id":"pres-09","name":"Edmilson Costa","number":"21","party":"PCB","state":"BR"},
-    {"id":"pres-10","name":"Ronaldo Caiado","number":"55","party":"PSD","state":"BR"},
-    {"id":"pres-11","name":"Clariana Barão","number":"36","party":"DC","state":"BR"},
-    {"id":"pres-12","name":"Rui Costa Pimenta","number":"29","party":"PCO","state":"BR"},
-    {"id":"pres-13","name":"Leonardo de Araujo","number":"28","party":"PRTB","state":"BR"}
+    {"id":"pres-01","name":"Luiz Inácio Lula da Silva","number":"13","party":"PT","state":"BR","photo":"https://upload.wikimedia.org/wikipedia/commons/5/5a/Luiz_In%C3%A1cio_Lula_da_Silva_%282023%29.jpg"},
+    {"id":"pres-02","name":"Flávio Bolsonaro","number":"22","party":"PL","state":"BR","photo":"https://upload.wikimedia.org/wikipedia/commons/4/4d/Fl%C3%A1vio_Bolsonaro_em_2023.jpg"},
+    {"id":"pres-03","name":"Romeu Zema","number":"30","party":"NOVO","state":"BR"},
+    {"id":"pres-04","name":"Ronaldo Caiado","number":"55","party":"PSD","state":"BR"},
+    {"id":"pres-05","name":"Renan Santos","number":"15","party":"MISSÃO","state":"BR"},
+    {"id":"pres-06","name":"Augusto Cury","number":"20","party":"Brasil dos Nossos Sonhos","state":"BR"}
+  ],
+  "Governador": [
+    {"id":"gov-sp-01","name":"Tarcísio de Freitas","number":"10","party":"REP","state":"SP","photo":"https://upload.wikimedia.org/wikipedia/commons/0/0d/Tarc%C3%ADsio_de_Freitas_em_2023.jpg"},
+    {"id":"gov-mg-01","name":"Romeu Zema","number":"30","party":"NOVO","state":"MG"},
+    {"id":"gov-rj-01","name":"Cláudio Castro","number":"20","party":"PL","state":"RJ"},
+    {"id":"gov-ba-01","name":"Jerônimo Rodrigues","number":"13","party":"PT","state":"BA"},
+    {"id":"gov-pr-01","name":"Ratinho Junior","number":"55","party":"PSD","state":"PR"},
+    {"id":"gov-go-01","name":"Ronaldo Caiado","number":"55","party":"UNIÃO","state":"GO"}
+  ],
+  "Senador": [
+    {"id":"sen-sp-01","name":"Eduardo Suplicy","number":"131","party":"PT","state":"SP"},
+    {"id":"sen-sp-02","name":"Marcos Pontes","number":"222","party":"PL","state":"SP"},
+    {"id":"sen-rj-01","name":"Romário","number":"222","party":"PL","state":"RJ"},
+    {"id":"sen-mg-01","name":"Duda Salabert","number":"500","party":"PDT","state":"MG"},
+    {"id":"sen-ba-01","name":"Jaques Wagner","number":"130","party":"PT","state":"BA"},
+    {"id":"sen-pr-01","name":"Sergio Moro","number":"444","party":"UNIÃO","state":"PR"}
+  ],
+  "Deputado federal": [
+    {"id":"dep-fed-sp-01","name":"Kim Kataguiri","number":"4444","party":"UNIÃO","state":"SP"},
+    {"id":"dep-fed-sp-02","name":"Tabata Amaral","number":"4000","party":"PSB","state":"SP"},
+    {"id":"dep-fed-rj-01","name":"Glauber Braga","number":"5050","party":"PSOL","state":"RJ"},
+    {"id":"dep-fed-mg-01","name":"Nikolas Ferreira","number":"2210","party":"PL","state":"MG"},
+    {"id":"dep-fed-ba-01","name":"Lídice da Mata","number":"4000","party":"PSB","state":"BA"}
+  ],
+  "Deputado estadual": [
+    {"id":"dep-est-sp-01","name":"Dani Alonso","number":"22222","party":"PL","state":"SP"},
+    {"id":"dep-est-sp-02","name":"Monica Seixas","number":"50000","party":"PSOL","state":"SP"},
+    {"id":"dep-est-rj-01","name":"Martha Rocha","number":"12123","party":"PDT","state":"RJ"},
+    {"id":"dep-est-mg-01","name":"Andréia de Jesus","number":"13123","party":"PT","state":"MG"},
+    {"id":"dep-est-ba-01","name":"Olívia Santana","number":"65123","party":"PCdoB","state":"BA"}
   ]
 }

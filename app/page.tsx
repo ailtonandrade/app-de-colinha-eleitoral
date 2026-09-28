@@ -125,7 +125,15 @@ export default function Page() {
 
   const progress = Object.keys(selected).length
   const chooseCandidate = (candidate: Candidate) => {
-    setSelected((current) => ({ ...current, [activeOffice]: candidate }))
+    setSelected((current) => {
+      const currentCandidate = current[activeOffice]
+      if (currentCandidate?.id === candidate.id) {
+        const next = { ...current }
+        delete next[activeOffice]
+        return next
+      }
+      return { ...current, [activeOffice]: candidate }
+    })
     setSearch('')
   }
 
