@@ -198,6 +198,8 @@ body { background: #064c32; color: #fff; }
   .location-row { background: #f3faf4; margin: 0 -1px; padding: 11px 8px; border-radius: 10px; }
   .office-tabs { margin: 0 -12px; padding: 0 12px; }
   .office-tab { min-height: 62px; }
+  .selected-strip-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; overflow: visible; }
+  .selected-chip, .selected-chip.filled { min-width: 0; width: 100%; flex: 1 1 auto; }
   .candidate-area { margin-top: 12px; padding: 14px 10px 9px; }
   .candidate-title h3 { font-size: 18px; }
   .search-wrap { height: 40px; }
