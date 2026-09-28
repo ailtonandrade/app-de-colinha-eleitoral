@@ -79,6 +79,14 @@ body { background:#004f32; color:#fff; }
 .coffee-support { background:linear-gradient(100deg,#08794a,#0b8c55); border-color:#66c47e; color:#fff; }
 .coffee-support span { color:#d8f5df; }
 .footer a { color:#ffe04a; }
+.search-wrap input::placeholder { color:#bfe8ca; opacity:1; }
+.search-wrap input { color:#fff; caret-color:#ffe04a; }
+.party-filter-wrap label, .party-filter-wrap span, .candidate-title small, .candidate-title .muted { color:#d8f5df; }
+.party-filter-wrap select { color:#164832; }
+.candidate-area .candidate-title h3 { color:#fff; }
+.candidate-area .candidate-title small { color:#d8f5df; }
+.selected-strip-label, .digits { color:#ffe04a; }
+.selected-strip-label { font-weight:900; }
 
 @media (max-width:600px) {
   .app-shell { background:linear-gradient(160deg,#003f29 0%,#006b42 58%,#00834e 100%); }

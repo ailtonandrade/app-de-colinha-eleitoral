@@ -72,7 +72,6 @@ export default function Page() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [selectionHydrated, setSelectionHydrated] = useState(false)
   const [donationOpen, setDonationOpen] = useState(false)
-  const [donationAmount, setDonationAmount] = useState('2')
   const [pixCopied, setPixCopied] = useState(false)
   const [qrCodeUrl, setQrCodeUrl] = useState('')
 
@@ -193,13 +192,20 @@ export default function Page() {
   const gap = 42
   const startX = 72
   const startY = 250
-  const loadImage = (source: string) => new Promise<HTMLImageElement>((resolve, reject) => {
+  const loadImage = async (source: string) => {
+  const response = await fetch(`/api/image?url=${encodeURIComponent(source)}`, { cache: 'force-cache' })
+  if (!response.ok) throw new Error('Foto indisponível')
+  const blob = await response.blob()
+  const objectUrl = URL.createObjectURL(blob)
+  try {
   const image = new Image()
-  image.crossOrigin = 'anonymous'
-  image.onload = () => resolve(image)
-  image.onerror = reject
-  image.src = `/api/image?url=${encodeURIComponent(source)}`
-  })
+  image.src = objectUrl
+  await image.decode()
+  return image
+  } finally {
+  URL.revokeObjectURL(objectUrl)
+  }
+  }
 
   await Promise.all(offices.map(async (office, index) => {
   const candidate = selected[office.name]
@@ -264,10 +270,10 @@ export default function Page() {
   }
 
   useEffect(() => {
-    QRCode.toDataURL(`PIX\nChave: ${pixKey}\nValor: R$ ${donationAmount || '0'}`, { width: 220, margin: 1, color: { dark: '#005b38', light: '#f8fff2' } })
+    QRCode.toDataURL(`PIX\nChave: ${pixKey}`, { width: 220, margin: 1, color: { dark: '#005b38', light: '#f8fff2' } })
       .then(setQrCodeUrl)
       .catch(() => setQrCodeUrl(''))
-  }, [donationAmount])
+  }, [])
 
   const activeDigits = offices.find((item) => item.name === activeOffice)?.digits
 
@@ -371,11 +377,7 @@ export default function Page() {
             <button className="modal-close" onClick={() => setDonationOpen(false)} aria-label="Fechar">×</button>
             <span className="donation-kicker">APOIE A COLINHA</span>
             <h2 id="donation-title">Um cafezinho para nós?</h2>
-            <p>Escolha um valor ou digite quanto quer contribuir.</p>
-            <div className="donation-values" role="group" aria-label="Valor da doação">
-              {['1', '2', '5'].map((value) => <button key={value} className={donationAmount === value ? 'active' : ''} onClick={() => setDonationAmount(value)}>R$ {value}</button>)}
-              <label className="custom-value"><span>R$</span><input inputMode="decimal" value={['1', '2', '5'].includes(donationAmount) ? '' : donationAmount} onChange={(event) => setDonationAmount(event.target.value.replace(',', '.'))} placeholder="Outro valor" aria-label="Outro valor" /></label>
-            </div>
+            <p>Copie a chave Pix ou escaneie o QR Code para apoiar o projeto.</p>
             {qrCodeUrl ? <img className="pix-qr" src={qrCodeUrl} alt="QR Code para doação via Pix" /> : <div className="pix-qr qr-loading" aria-label="Gerando QR Code">Gerando QR Code...</div>}
             <strong className="qr-caption">Escaneie com o app do seu banco</strong>
             <div className="pix-key-row"><code>{pixKey}</code><button onClick={copyPixKey}>{pixCopied ? 'Copiada' : 'Copiar chave'}</button></div>
