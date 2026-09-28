@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 
-// Em 2026 o eleitor vota 6 vezes, nesta ordem na urna. Senado renova 2/3: são 2 votos.
+// Em 2026 o eleitor vota 6 vezes. Senado renova 2/3: são 2 votos para senador.
 type Office = 'Deputado federal' | 'Deputado estadual' | '1º Senador' | '2º Senador' | 'Governador' | 'Presidente'
 type ApiOffice = 'Presidente' | 'Governador' | 'Senador' | 'Deputado federal' | 'Deputado estadual'
 
@@ -17,12 +17,12 @@ type Candidate = {
 }
 
 const offices: { name: Office; api: ApiOffice; digits: number }[] = [
-  { name: 'Deputado federal', api: 'Deputado federal', digits: 4 },
-  { name: 'Deputado estadual', api: 'Deputado estadual', digits: 5 },
+  { name: 'Presidente', api: 'Presidente', digits: 2 },
   { name: '1º Senador', api: 'Senador', digits: 3 },
   { name: '2º Senador', api: 'Senador', digits: 3 },
   { name: 'Governador', api: 'Governador', digits: 2 },
-  { name: 'Presidente', api: 'Presidente', digits: 2 },
+  { name: 'Deputado federal', api: 'Deputado federal', digits: 4 },
+  { name: 'Deputado estadual', api: 'Deputado estadual', digits: 5 },
 ]
 
 const states: [string, string][] = [
@@ -57,7 +57,7 @@ function Avatar({ candidate, className = 'candidate-avatar' }: { candidate: Cand
 
 export default function Page() {
   const [state, setState] = useState('')
-  const [activeOffice, setActiveOffice] = useState<Office>('Deputado federal')
+  const [activeOffice, setActiveOffice] = useState<Office>('Presidente')
   const [selected, setSelected] = useState<Partial<Record<Office, Candidate>>>({})
   // Cache por "cargo|estado": os dois votos de Senador compartilham a mesma lista.
   const [candidateData, setCandidateData] = useState<Record<string, Candidate[]>>({})
@@ -162,7 +162,7 @@ export default function Page() {
           <div className="builder-title"><h1>Monte sua colinha</h1><span>{progress}/{offices.length}</span></div>
 
           <div className="selected-strip" aria-label="Candidatos escolhidos">
-            <div className="selected-strip-label">Sua seleção · na ordem da urna</div>
+            <div className="selected-strip-label">Sua seleção</div>
             <div className="selected-strip-list">
               {offices.map((office) => {
                 const candidate = selected[office.name]
