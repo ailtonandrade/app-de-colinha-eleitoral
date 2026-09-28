@@ -198,7 +198,7 @@ export default function Page() {
   image.crossOrigin = 'anonymous'
   image.onload = () => resolve(image)
   image.onerror = reject
-  image.src = source
+  image.src = `/api/image?url=${encodeURIComponent(source)}`
   })
 
   await Promise.all(offices.map(async (office, index) => {
