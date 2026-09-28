@@ -197,14 +197,10 @@ export default function Page() {
   if (!response.ok) throw new Error('Foto indisponível')
   const blob = await response.blob()
   const objectUrl = URL.createObjectURL(blob)
-  try {
   const image = new Image()
   image.src = objectUrl
   await image.decode()
   return image
-  } finally {
-  URL.revokeObjectURL(objectUrl)
-  }
   }
 
   await Promise.all(offices.map(async (office, index) => {
@@ -224,8 +220,10 @@ export default function Page() {
   context.fillStyle = candidate ? '#ffffff' : '#567064'
   context.font = '700 54px Arial'
   context.fillText(candidate?.number || '—', x + 28, y + 118)
+  context.font = '700 28px Arial'
+  context.fillText(candidate ? candidate.name.split(/\s+/)[0] : 'Não escolhido', x + 28, y + 164)
   context.font = '500 27px Arial'
-  context.fillText(candidate?.party || 'Ainda não escolhido', x + 28, y + 164)
+  context.fillText(candidate?.party || '', x + 28, y + 204)
   if (candidate?.photo) {
   try {
   const image = await loadImage(candidate.photo)
@@ -304,6 +302,7 @@ export default function Page() {
                     {candidate && <Avatar candidate={candidate} className="chip-avatar" />}
                     {candidate && <span className="chip-check" aria-hidden="true">✓</span>}
                     <span>{candidate ? candidate.number : '—'}</span>
+                    {candidate && <strong className="chip-name">{candidate.name.split(/\s+/)[0]}</strong>}
                     <small>{officeShort(office.name, state)}</small>
                   </button>
                 )
