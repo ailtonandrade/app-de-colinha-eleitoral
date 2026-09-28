@@ -25,6 +25,60 @@ button { cursor: pointer; }
 @media (max-width: 600px) { .hero { display:block; }.hero-seal { display:none; }.hero h1 { font-size:52px; }.office-tabs { overflow-x:auto; grid-template-columns:repeat(5, 110px); }.location-row { flex-wrap:wrap; }.location-help { width:100%; }.builder-card { padding:20px 17px; }.card-heading { gap:10px; }.progress-label { white-space:nowrap; }.footer { display:block; line-height:2; }.footer span { display:block; }.top-actions .share-button { padding:10px 11px; }.brand strong { font-size:18px; } }
 @media print { .topbar, .hero, .builder-card, .footer { display:none; }.app-shell { background:#fff; }.content-grid { display:block; padding:0; }.slip-card { color:#000; background:#fff; box-shadow:none; border:2px solid #1d5b49; max-width:500px; margin:30px auto; }.slip-top { border-color:#999; }.slip-top .mini-label, .slip-year, .slip-state, .slip-item small, .slip-footer { color:#555; }.slip-item { border-color:#ddd; }.slip-item strong, .slip-item b { color:#000; }.print-button { display:none; } }
 
+/* Mobile first: compacta sem perder a hierarquia no viewport de bolso. */
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
+  .app-shell { background: var(--paper); }
+  .topbar { position: sticky; top: 0; z-index: 10; height: 58px; padding: 0 14px; }
+  .brand { gap: 8px; }
+  .brand-mark { width: 28px; height: 28px; }
+  .brand-mark:before, .brand-mark:after, .brand-mark span { width: 19px; }
+  .brand strong { font-size: 17px; }
+  .brand small { font-size: 7px; letter-spacing: 1.5px; }
+  .top-actions .share-button { padding: 9px 10px; font-size: 11px; }
+  .top-actions .share-button .icon { margin-right: 2px; }
+  .hero { padding: 34px 16px 25px; }
+  .eyebrow { margin-bottom: 15px; font-size: 9px; letter-spacing: 2px; }
+  .hero h1 { font-size: 43px; letter-spacing: -2.8px; line-height: .96; margin-bottom: 16px; }
+  .hero p { font-size: 14px; line-height: 1.45; }
+  .hero p br { display: none; }
+  .hero-note { margin-top: 18px; font-size: 10px; }
+  .content-grid { display: flex; flex-direction: column; gap: 14px; padding: 0 10px 30px; }
+  .builder-card, .slip-card { border-radius: 14px; }
+  .builder-card { order: -1; }
+  .slip-card { order: 0; }
+  .slip-top { padding: 18px 16px 14px; }
+  .slip-top h2 { font-size: 21px; }
+  .slip-state { margin: 13px 16px; }
+  .slip-list { padding: 0 16px 7px; }
+  .slip-item { padding: 10px 0; }
+  .slip-footer { padding: 14px 16px; }
+  .print-button { width: calc(100% - 32px); margin: 0 16px 16px; padding: 11px 14px; }
+  .builder-card { padding: 17px 14px 20px; }
+  .card-heading { padding-bottom: 17px; }
+  .card-heading > div { gap: 10px; }
+  .section-number { font-size: 15px; }
+  .card-heading h2 { font-size: 21px; }
+  .card-heading p { font-size: 11px; }
+  .progress-label { padding: 6px 8px; font-size: 9px; }
+  .location-row { padding: 15px 0; gap: 8px; }
+  .location-row select { flex: 1; min-width: 0; padding: 9px 8px; }
+  .location-help { font-size: 9px; }
+  .office-tabs { margin: 0 -14px; padding: 0 14px; gap: 2px; scrollbar-width: none; }
+  .office-tabs::-webkit-scrollbar { display: none; }
+  .office-tab { min-height: 66px; padding: 7px 7px 12px; }
+  .office-tab strong { font-size: 10px; }
+  .office-tab small { font-size: 8px; }
+  .candidate-area { padding-top: 17px; }
+  .candidate-title h3 { font-size: 20px; }
+  .search-wrap input { font-size: 12px; }
+  .candidate { padding: 11px 5px; gap: 8px; }
+  .candidate-info strong { font-size: 12px; }
+  .candidate-info small { font-size: 10px; }
+  .candidate-number { font-size: 15px; }
+  .footer { padding: 16px 14px 25px; font-size: 9px; }
+}
+
 @layer base { * { border-color: var(--line); } }
 
 /* Mantém tokens shadcn disponíveis para componentes futuros. */
