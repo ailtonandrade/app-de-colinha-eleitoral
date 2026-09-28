@@ -11,6 +11,7 @@ type Candidate = {
   number: string
   party: string
   state?: string
+  photo?: string
 }
 
 const offices: { name: Office; hint: string; digits: number }[] = [
@@ -23,10 +24,10 @@ const offices: { name: Office; hint: string; digits: number }[] = [
 
 const candidates: Record<Office, Candidate[]> = {
   Presidente: [
-    { id: 'pres-lula', name: 'Luiz Inácio Lula da Silva', number: '13', party: 'PT' },
-    { id: 'pres-flavio', name: 'Flávio Bolsonaro', number: '22', party: 'PL' },
-    { id: 'pres-renan', name: 'Renan Santos', number: '—', party: 'Partido a confirmar' },
-    { id: 'pres-augusto', name: 'Augusto Cury', number: '—', party: 'Partido a confirmar' },
+    { id: 'pres-lula', name: 'Luiz Inácio Lula da Silva', number: '13', party: 'PT', photo: 'https://commons.wikimedia.org/wiki/Special:FilePath/Luiz%20In%C3%A1cio%20Lula%20da%20Silva%20-%20foto%20oficial%203x4.jpg' },
+    { id: 'pres-flavio', name: 'Flávio Bolsonaro', number: '22', party: 'PL', photo: 'https://commons.wikimedia.org/wiki/Special:FilePath/Fl%C3%A1vio%20Bolsonaro%20em%202019.jpg' },
+    { id: 'pres-renan', name: 'Renan Santos', number: '—', party: 'Partido a confirmar', photo: 'https://ui-avatars.com/api/?name=Renan+Santos&background=0b6b45&color=fff&size=128' },
+    { id: 'pres-augusto', name: 'Augusto Cury', number: '—', party: 'Partido a confirmar', photo: 'https://ui-avatars.com/api/?name=Augusto+Cury&background=0b6b45&color=fff&size=128' },
     { id: 'pres-1', name: 'Maria Silva', number: '40', party: 'PSB' },
     { id: 'pres-2', name: 'João Oliveira', number: '15', party: 'MDB' },
   ],
@@ -147,7 +148,7 @@ export default function Page() {
             <div className="candidate-title"><div><span className="mini-label">CARGO</span><h3>{activeOffice}</h3></div><span className="digits">{offices.find((item) => item.name === activeOffice)?.digits} dígitos</span></div>
             <div className="search-wrap"><Icon>⌕</Icon><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Busque por nome, número ou partido" aria-label="Buscar candidato" /></div>
             <div className="candidate-list">
-              {filteredCandidates.map((candidate) => <button className={selected[activeOffice]?.id === candidate.id ? 'candidate selected' : 'candidate'} key={candidate.id} onClick={() => chooseCandidate(candidate)}><span className="candidate-avatar">{candidate.name.split(' ').map((word) => word[0]).slice(0, 2).join('')}</span><span className="candidate-info"><strong>{candidate.name}</strong><small>{candidate.party}{candidate.state ? ` · ${candidate.state}` : ''}</small></span><span className="candidate-number">{candidate.number}</span><span className="radio">{selected[activeOffice]?.id === candidate.id ? '✓' : ''}</span></button>)}
+              {filteredCandidates.map((candidate) => <button className={selected[activeOffice]?.id === candidate.id ? 'candidate selected' : 'candidate'} key={candidate.id} onClick={() => chooseCandidate(candidate)}><span className="candidate-avatar">{candidate.photo ? <img src={candidate.photo} alt={`Foto de ${candidate.name}`} loading="lazy" /> : candidate.name.split(' ').map((word) => word[0]).slice(0, 2).join('')}</span><span className="candidate-info"><strong>{candidate.name}</strong><small>{candidate.party}{candidate.state ? ` · ${candidate.state}` : ''}</small></span><span className="candidate-number">{candidate.number}</span><span className="radio">{selected[activeOffice]?.id === candidate.id ? '✓' : ''}</span></button>)}
             </div>
             <p className="data-source"><Icon>⌁</Icon> Consulte os dados oficiais do TSE antes de votar.</p>
           </div>
