@@ -49,9 +49,7 @@ export async function GET(request: Request) {
   const isNational = office === 'Presidente'
   const isDeputy = office.startsWith('Deputado')
   const scopedState = state === 'BR' ? '' : state
-  // Deputados passam de mil por estado: sem estado a lista ficaria enorme e inútil pra colinha.
-  if (isDeputy && !scopedState) return NextResponse.json({ candidates: [], needsState: true, source: 'TSE', scope: 'BR' })
-
+  // Sem UF, consulta todos os estados para manter o filtro opcional e atender eleitores de todo o Brasil.
   const states = isNational ? ['BR'] : scopedState ? [scopedState] : brazilianStates
   try {
     const results = await Promise.all(states.map(async (uf) => {

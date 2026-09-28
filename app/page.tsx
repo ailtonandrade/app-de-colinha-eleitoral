@@ -180,7 +180,7 @@ export default function Page() {
           <div className="location-row">
             <label htmlFor="state">Seu estado</label>
             <select id="state" value={state} onChange={(event) => changeState(event.target.value)}>
-              <option value="">Selecione</option>
+              <option value="">Todos os estados</option>
               {states.map(([uf, name]) => <option key={uf} value={uf}>{uf} — {name}</option>)}
             </select>
             <span className="location-help">Você vota nos candidatos do estado do seu título.</span>
