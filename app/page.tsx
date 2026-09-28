@@ -113,9 +113,8 @@ export default function Page() {
       <section className="hero" id="top">
         <div className="hero-copy">
           <div className="eyebrow"><span /> ELEIÇÕES 2026</div>
-          <h1>Vote com <em>clareza.</em></h1>
-          <p>Monte sua colinha eleitoral em poucos passos.<br />Escolha seus candidatos e leve tudo com você no dia da votação.</p>
-          <div className="hero-note"><span className="check">✓</span> Seus dados ficam só neste link</div>
+          <h1>Monte sua <em>colinha.</em></h1>
+          <p>Escolha seus candidatos e confira seus números antes de votar.</p>
         </div>
         <div className="hero-seal" aria-hidden="true"><span>2026</span><small>SEU VOTO<br />IMPORTA</small><i>✦</i></div>
       </section>
