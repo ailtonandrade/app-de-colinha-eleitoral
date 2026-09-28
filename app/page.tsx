@@ -152,7 +152,6 @@ export default function Page() {
         <aside className="slip-card">
           <div className="slip-top"><span className="mini-label">SUA COLINHA</span></div>
           <div className="slip-list">{offices.map((office) => { const candidate = selected[office.name]; return <div className={candidate ? 'slip-item done' : 'slip-item'} key={office.name}><span className="slip-dot">{candidate ? '✓' : '—'}</span>{candidate ? <span className="slip-avatar" aria-hidden="true">{candidate.name.split(' ').map((word) => word[0]).slice(0, 2).join('')}</span> : null}<span><small>{office.name}</small><strong>{candidate ? candidate.name : 'Ainda não escolhido'}</strong><em>{candidate?.party || 'Escolha um candidato'}</em></span><b>{candidate?.number || '—'}</b></div> })}</div>
-          <button className="print-button" onClick={() => window.print()}><Icon>⌁</Icon> Imprimir colinha</button>
         </aside>
       </div>
 
